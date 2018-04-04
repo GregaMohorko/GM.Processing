@@ -1,6 +1,8 @@
-# GM.Processing -> Signal -> Image -> Segmentation -> Clustering
+# GM.Processing -> Signal -> Image -> Segmentation -> Clustering -> SLIC
 
-## [Simple Linear Iterative Clustering (SLIC)](src/GM.Processing/GM.Processing/Signal/Image/Segmentation/Clustering/SLIC.cs)
+**Implementation**: [Simple Linear Iterative Clustering (SLIC)](SLIC.cs)
+
+## Examples
 
 ![SLIC k=1024](/Documentation/Signal/Image/Segmentation/Clustering/SLIC/SLIC%20Yamaha%20k=1024.gif "Simple Linear Iterative Clustering (SLIC) k=1024")
 ![SLIC k=512](/Documentation/Signal/Image/Segmentation/Clustering/SLIC/SLIC%20Yamaha%20k=512.gif "Simple Linear Iterative Clustering (SLIC) k=512")
