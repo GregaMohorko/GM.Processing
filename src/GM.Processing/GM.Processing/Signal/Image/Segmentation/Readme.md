@@ -1,6 +1,6 @@
 # GM.Processing -> Signal -> Image -> Segmentation
 
-## Clustering
+## [Clustering](Clustering)
 
 ### [Simple Linear Iterative Clustering (SLIC)](Segmentation/Clustering/SLIC.md)
 
