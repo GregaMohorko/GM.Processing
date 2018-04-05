@@ -1,6 +1,6 @@
 # GM.Processing -> Computer Science -> Computer Graphics
 
-## Contour Lines
+## [Contour Lines](ContourLines)
 
 ### [Segment Contour Lines](ContourLines/SegmentContourLines.md)
 
