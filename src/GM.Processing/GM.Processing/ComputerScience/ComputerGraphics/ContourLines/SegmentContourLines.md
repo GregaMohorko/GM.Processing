@@ -1,6 +1,6 @@
 # GM.Processing -> Computer Science -> Computer Graphics -> Contour Lines -> Segment Contour Lines
 
-**Implementation**: [Segment Contour Lines](ContourLines/SegmentContourLines.cs)
+**Implementation**: [Segment Contour Lines](SegmentContourLines.cs)
 
 ## Examples
 
