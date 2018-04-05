@@ -2,7 +2,7 @@
 
 ## [Simple Linear Iterative Clustering (SLIC)](SLIC.md)
 
-<img src="/Documentation/Signal/Image/Segmentation/Clustering/SLIC/SLIC%20Yamaha%20k=512.gif" alt="SLIC k=512" title="Simple Linear Iterative Clustering (SLIC) k=512" width="500">
+![SLIC](/Documentation/Signal/Image/Segmentation/Clustering/SLIC/SLIC%20Honda.gif "Simple Linear Iterative Clustering (SLIC)")
 
 [Back to Segmentation](/src/GM.Processing/GM.Processing/Signal/Image/Segmentation)
 

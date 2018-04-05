@@ -4,6 +4,10 @@
 
 ## Examples
 
+![SLIC](/Documentation/Signal/Image/Segmentation/Clustering/SLIC/SLIC%20Honda.gif "Simple Linear Iterative Clustering (SLIC)")
+![SLIC](/Documentation/Signal/Image/Segmentation/Clustering/SLIC/SLIC%20Lenna.gif "Simple Linear Iterative Clustering (SLIC)")
+![SLIC](/Documentation/Signal/Image/Segmentation/Clustering/SLIC/SLIC%20Umbrella.gif "Simple Linear Iterative Clustering (SLIC)")
+![original image](/Documentation/Signal/Image/Segmentation/Clustering/SLIC/SLIC%20Yamaha%20original.png "Original image")
 ![SLIC k=1024](/Documentation/Signal/Image/Segmentation/Clustering/SLIC/SLIC%20Yamaha%20k=1024.gif "Simple Linear Iterative Clustering (SLIC) k=1024")
 ![SLIC k=512](/Documentation/Signal/Image/Segmentation/Clustering/SLIC/SLIC%20Yamaha%20k=512.gif "Simple Linear Iterative Clustering (SLIC) k=512")
 ![SLIC k=256](/Documentation/Signal/Image/Segmentation/Clustering/SLIC/SLIC%20Yamaha%20k=256.gif "Simple Linear Iterative Clustering (SLIC) k=256")
