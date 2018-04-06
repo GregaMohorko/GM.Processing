@@ -27,10 +27,6 @@ Author: GregaMohorko
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GM.Processing.Signal.Image.ContrastEnhancement
 {
@@ -102,15 +98,20 @@ namespace GM.Processing.Signal.Image.ContrastEnhancement
 			var newPlane = new GMImagePlane(plane);
 
 			int MxN = tileSize * tileSize;
-			double MxN1 = MxN - 1;
+			double MxN255 = 255d / MxN;
 
 			int xBorder = plane.Width - 1;
 
 			int y = plane.Height - 1;
 			int x = xBorder;
 
+			int windowLeft = x - tileSize / 2;
+			int windowRight = windowLeft + tileSize - 1;
+			int windowBottom = y - tileSize / 2;
+			int windowTop = windowBottom + tileSize - 1;
+
 			// get the histogram of the first neighbourhood region
-			var window = ImageHistogram.Get(plane, x, y, tileSize, tileSize);
+			var window = ImageHistogram.Get(plane, windowLeft, windowBottom, tileSize, tileSize);
 			int[] histogramBuffer = new int[256];
 			int[] histogram;
 
@@ -156,7 +157,7 @@ namespace GM.Processing.Signal.Image.ContrastEnhancement
 						cdf += occurenceCount;
 						if(value == currentValue) {
 							// calculate the equalization
-							newValue = (byte)Math.Round(((cdf - cdfMin) / MxN1) * 255);
+							newValue = (byte)Math.Round((cdf - cdfMin) * MxN255);
 							newPlane[x, y] = newValue;
 							break;
 						}
@@ -168,23 +169,26 @@ namespace GM.Processing.Signal.Image.ContrastEnhancement
 							break;
 						}
 						// subtract the left column
-						xOldColumn = x;
+						xOldColumn = windowLeft;
 						++x;
-						// add the new right column
-						xNewColumn = x + tileSize - 1;
+						++windowLeft;
+						++windowRight;
+						xNewColumn = windowRight;
 					} else {
 						if(x == 0) {
 							break;
 						}
 						// subtract the right column
-						xOldColumn = x + tileSize - 1;
+						xOldColumn = windowRight;
 						// add the new left column
 						--x;
-						xNewColumn = x;
+						--windowLeft;
+						--windowRight;
+						xNewColumn = windowLeft;
 					}
 
 					// move the window
-					for(yy = y + tileSize - 1; yy >= y; --yy) {
+					for(yy = windowTop; yy >= windowBottom; --yy) {
 						oldValue = plane.GetPixelMirrored(xOldColumn, yy);
 						newValue = plane.GetPixelMirrored(xNewColumn, yy);
 						if(oldValue == newValue) {
@@ -202,12 +206,14 @@ namespace GM.Processing.Signal.Image.ContrastEnhancement
 				// the window moves down and updates
 				{
 					// subtract the top row
-					yOldTopRow = y + tileSize - 1;
+					yOldTopRow = windowTop;
 					// add the new bottom row
 					--y;
-					for(xx = x + tileSize - 1; xx >= x; --xx) {
+					--windowTop;
+					--windowBottom;
+					for(xx = windowRight; xx >= windowLeft; --xx) {
 						oldValue = plane.GetPixelMirrored(xx, yOldTopRow);
-						newValue = plane.GetPixelMirrored(xx, y);
+						newValue = plane.GetPixelMirrored(xx, windowBottom);
 						if(oldValue == newValue) {
 							continue;
 						}
@@ -218,7 +224,6 @@ namespace GM.Processing.Signal.Image.ContrastEnhancement
 
 				// change the direction
 				isGoingRight = !isGoingRight;
-				x = isGoingRight ? 0 : xBorder;
 			}
 			
 			plane.SetPixels(newPlane);

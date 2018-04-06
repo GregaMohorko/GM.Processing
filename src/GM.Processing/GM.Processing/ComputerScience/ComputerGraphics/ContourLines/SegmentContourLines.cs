@@ -26,12 +26,7 @@ Created: 2018-4-4
 Author: GregaMohorko
 */
 
-using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using GM.Processing.Signal.Image;
 
 namespace GM.Processing.ComputerScience.ComputerGraphics.ContourLines

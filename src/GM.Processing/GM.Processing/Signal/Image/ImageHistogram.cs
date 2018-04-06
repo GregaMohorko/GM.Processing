@@ -26,12 +26,6 @@ Created: 2018-4-4
 Author: GregaMohorko
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace GM.Processing.Signal.Image
 {
 	/// <summary>
@@ -51,19 +45,35 @@ namespace GM.Processing.Signal.Image
 
 		/// <summary>
 		/// Gets the histogram for just the specified region of the image plane.
-		/// <para>If part of the region is outside the image boundaries, mirrored values are used.</para>
+		/// <para>If part of the region is outside of image boundaries, mirrored values are used.</para>
 		/// </summary>
 		/// <param name="plane">The image plane.</param>
-		/// <param name="x">The x position of the region.</param>
-		/// <param name="y">The y position of the region.</param>
+		/// <param name="centerX">The x coordinate of the center position of the region.</param>
+		/// <param name="centerY">The y coordinate of the center position of the region.</param>
+		/// <param name="width">The width of the region.</param>
+		/// <param name="height">The height of the region.</param>
+		public static int[] GetFromCenter(GMImagePlane plane, int centerX, int centerY, int width,int height)
+		{
+			return Get(plane, centerX - width / 2, centerY - height / 2, width, height);
+		}
+
+		/// <summary>
+		/// Gets the histogram for just the specified region of the image plane.
+		/// <para>If part of the region is outside of image boundaries, mirrored values are used.</para>
+		/// </summary>
+		/// <param name="plane">The image plane.</param>
+		/// <param name="x">The x position (left side) of the region.</param>
+		/// <param name="y">The y position (bottom) of the region.</param>
 		/// <param name="width">The width of the region.</param>
 		/// <param name="height">The height of the region.</param>
 		public static int[] Get(GMImagePlane plane, int x, int y, int width, int height)
 		{
 			var hist = new int[256];
-			for(int yy = y + height - 1; yy >= y; --yy) {
-				for(int xx = x + width - 1; xx >= x; --xx) {
-					byte value = plane.GetPixelMirrored(xx, yy);
+			byte value;
+			int yy, xx;
+			for(yy = y + height - 1; yy >= y; --yy) {
+				for(xx = x + width - 1; xx >= x; --xx) {
+					value = plane.GetPixelMirrored(xx, yy);
 					++hist[value];
 				}
 			}
