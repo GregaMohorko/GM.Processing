@@ -31,7 +31,7 @@ using System;
 namespace GM.Processing.Signal.Image.ContrastEnhancement
 {
 	/// <summary>
-	/// Implementation of Histogram equalization (HE) algorithm that improves image contrast using the image's histogram.
+	/// Implementation of (Contrast Limited) Histogram equalization (HE (or CLHE if limited)) algorithm that improves image contrast using the image's histogram.
 	/// <para>This method is useful in images with backgrounds and foregrounds that are both bright or both dark, where the distribution of pixel values is similar throughout the image.</para>
 	/// <para>https://en.wikipedia.org/wiki/Histogram_equalization</para>
 	/// </summary>

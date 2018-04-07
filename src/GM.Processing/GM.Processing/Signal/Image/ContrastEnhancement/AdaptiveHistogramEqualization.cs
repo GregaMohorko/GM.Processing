@@ -31,7 +31,7 @@ using System;
 namespace GM.Processing.Signal.Image.ContrastEnhancement
 {
 	/// <summary>
-	/// Implementation of Adaptive histogram equalization (AHE) algorithm that improves image contrast using the image's histogram and also adapts to local changes in contrast.
+	/// Implementation of (Contrast Limited) Adaptive histogram equalization (AHE (or CLAHE if limited)) algorithm that improves image contrast using the image's histogram and also adapts to local changes in contrast.
 	/// <para>This method is useful in images that contain regions that are significantly lighter or darker than most of the image. It is suitable for improving the local contrast and enhancing the definitions of edges in each region of an image.</para>
 	/// <para>https://en.wikipedia.org/wiki/Adaptive_histogram_equalization</para>
 	/// </summary>
