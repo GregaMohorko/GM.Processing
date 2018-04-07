@@ -2,11 +2,11 @@
 
 ## [(Contrast Limited) Histogram Equalization](HistogramEqualization.md)
 
-![HE & CLHE](/Documentation/Signal/Image/ContrastEnhancement/HE/HE%20&%20CLHE%20Courtyard.gif "(Contrast Limited) Histogram Equalization ((CL)HE)")
+![HE & CLHE](/Documentation/Signal/Image/Contrast%20Enhancement/HE/HE%20&%20CLHE%20Courtyard.gif "(Contrast Limited) Histogram Equalization ((CL)HE)")
 
 ## [(Contrast Limited) Adaptive Histogram Equalization](AdaptiveHistogramEqualization.md)
 
-![AHE & CLAHE](/Documentation/Signal/Image/ContrastEnhancement/AHE/AHE%20&%20CLAHE%20Schonbrunn%20garden%201.gif "(Contrast Limited) Adaptive Histogram Equalization ((CL)AHE)")
+![AHE & CLAHE](/Documentation/Signal/Image/Contrast%20Enhancement/AHE/AHE%20&%20CLAHE%20Schonbrunn%20garden%201.gif "(Contrast Limited) Adaptive Histogram Equalization ((CL)AHE)")
 
 [Back to Image](/src/GM.Processing/GM.Processing/Signal/Image)
 

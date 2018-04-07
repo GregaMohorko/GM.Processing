@@ -4,8 +4,8 @@
 
 ## Examples
 
-![HE & CLHE](/Documentation/Signal/Image/ContrastEnhancement/HE/HE%20&%20CLHE%20Church.gif "(Contrast Limited) Histogram Equalization ((CL)HE)")
-![HE & CLHE](/Documentation/Signal/Image/ContrastEnhancement/HE/HE%20&%20CLHE%20Courtyard.gif "(Contrast Limited) Histogram Equalization ((CL)HE)")
+![HE & CLHE](/Documentation/Signal/Image/Contrast%20Enhancement/HE/HE%20&%20CLHE%20Church.gif "(Contrast Limited) Histogram Equalization ((CL)HE)")
+![HE & CLHE](/Documentation/Signal/Image/Contrast%20Enhancement/HE/HE%20&%20CLHE%20Courtyard.gif "(Contrast Limited) Histogram Equalization ((CL)HE)")
 
 [Back to Contrast Enhancement](/src/GM.Processing/GM.Processing/Signal/Image/ContrastEnhancement)
 
