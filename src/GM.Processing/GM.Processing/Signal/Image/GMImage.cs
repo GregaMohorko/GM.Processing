@@ -181,6 +181,9 @@ namespace GM.Processing.Signal.Image
 			}
 			set
 			{
+				if(value == null) {
+					throw new ArgumentNullException(nameof(value));
+				}
 				if(!(Planes.Count >= 3)) {
 					throw new InvalidOperationException("Image must have at least 3 bit planes.");
 				}
@@ -212,6 +215,9 @@ namespace GM.Processing.Signal.Image
 		/// <param name="color"></param>
 		public void SetPixel(int x, int y, Color color)
 		{
+			if(color == null) {
+				throw new ArgumentNullException(nameof(color));
+			}
 			this[x, y] = color;
 		}
 

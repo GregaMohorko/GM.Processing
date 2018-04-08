@@ -52,6 +52,9 @@ namespace GM.Processing.Utility
 		/// <param name="V">Value (from 0 to 1).</param>
 		public static void RGBToHSV(Color color, out double H, out double S, out double V)
 		{
+			if(color == null) {
+				throw new ArgumentNullException(nameof(color));
+			}
 			RGBToHSV(color.R, color.G, color.B, out H, out S, out V);
 		}
 
@@ -228,6 +231,9 @@ namespace GM.Processing.Utility
 		/// <param name="b">Blue-yellow color component.</param>
 		public static void RGBToCIELAB(Color color, out double L, out double a, out double b)
 		{
+			if(color == null) {
+				throw new ArgumentNullException(nameof(color));
+			}
 			RGBToCIELAB(color.R, color.G, color.B, out L, out a, out b);
 		}
 
@@ -322,6 +328,9 @@ namespace GM.Processing.Utility
 		/// <param name="Z">Z.</param>
 		public static void RGBToXYZ(Color color, out double X, out double Y, out double Z)
 		{
+			if(color == null) {
+				throw new ArgumentNullException(nameof(color));
+			}
 			RGBToXYZ(color.R, color.G, color.B, out X, out Y, out Z);
 		}
 

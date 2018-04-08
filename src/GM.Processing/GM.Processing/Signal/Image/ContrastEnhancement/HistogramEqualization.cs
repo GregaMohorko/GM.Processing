@@ -45,6 +45,10 @@ namespace GM.Processing.Signal.Image.ContrastEnhancement
 		/// <param name="clipLimit">A value that limits the amplification. Common values are between 3 and 4.</param>
 		public static void AdjustContrast(GMImage image, double clipLimit = 0)
 		{
+			if(image == null) {
+				throw new ArgumentNullException(nameof(image));
+			}
+
 			if(image.IsGrayscale) {
 				AdjustContrastOfGrayscale(image, clipLimit);
 			} else {
@@ -59,6 +63,9 @@ namespace GM.Processing.Signal.Image.ContrastEnhancement
 		/// <param name="clipLimit">A value that limits the amplification. Common values are between 3 and 4.</param>
 		public static void AdjustContrastOfRGB(GMImage image, double clipLimit = 0)
 		{
+			if(image == null) {
+				throw new ArgumentNullException(nameof(image));
+			}
 			if(!image.IsRGB) {
 				throw new ArgumentException("The image must be RGB.", nameof(image));
 			}
@@ -82,6 +89,10 @@ namespace GM.Processing.Signal.Image.ContrastEnhancement
 		/// <param name="clipLimit">A value that limits the amplification. Common values are between 3 and 4.</param>
 		public static void AdjustContrastOfGrayscale(GMImage image, double clipLimit = 0)
 		{
+			if(image == null) {
+				throw new ArgumentNullException(nameof(image));
+			}
+
 			// apply the algorithm on the first plane
 			GMImagePlane firstPlane = image[0];
 			HistogramEqualizationImpl(firstPlane, clipLimit);
@@ -146,6 +157,10 @@ namespace GM.Processing.Signal.Image.ContrastEnhancement
 		/// <param name="pixelCount">Number of pixels in the picture. This value is important for the calculation of the actual clip level.</param>
 		public static void ClipHistogram(int[] histogram, double clipLimit, int pixelCount)
 		{
+			if(histogram == null) {
+				throw new ArgumentNullException(nameof(histogram));
+			}
+
 			if(clipLimit <= 0) {
 				return;
 			}

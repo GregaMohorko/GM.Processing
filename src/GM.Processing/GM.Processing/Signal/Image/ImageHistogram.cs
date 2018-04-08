@@ -26,6 +26,8 @@ Created: 2018-4-4
 Author: GregaMohorko
 */
 
+using System;
+
 namespace GM.Processing.Signal.Image
 {
 	/// <summary>
@@ -40,6 +42,10 @@ namespace GM.Processing.Signal.Image
 		/// <param name="plane">The image plane.</param>
 		public static int[] Get(GMImagePlane plane)
 		{
+			if(plane == null) {
+				throw new ArgumentNullException(nameof(plane));
+			}
+			
 			return Get(plane, 0, 0, plane.Width, plane.Height);
 		}
 
@@ -68,6 +74,10 @@ namespace GM.Processing.Signal.Image
 		/// <param name="height">The height of the region.</param>
 		public static int[] Get(GMImagePlane plane, int x, int y, int width, int height)
 		{
+			if(plane == null) {
+				throw new ArgumentNullException(nameof(plane));
+			}
+
 			var hist = new int[256];
 			byte value;
 			int yy, xx;

@@ -68,6 +68,10 @@ namespace GM.Processing.Signal.Image
 		/// <param name="pixels">The pixels of the plane.</param>
 		public GMImagePlane(byte[,] pixels)
 		{
+			if(pixels == null) {
+				throw new ArgumentNullException(nameof(pixels));
+			}
+
 			Width = pixels.GetLength(1);
 			Height = pixels.GetLength(0);
 			Pixels = new byte[Height, Width];
@@ -80,6 +84,10 @@ namespace GM.Processing.Signal.Image
 		/// <param name="imagePlane">The image plane to copy from.</param>
 		public GMImagePlane(GMImagePlane imagePlane)
 		{
+			if(imagePlane == null) {
+				throw new ArgumentNullException(nameof(imagePlane));
+			}
+
 			Width = imagePlane.Width;
 			Height = imagePlane.Height;
 			Pixels = new byte[Height, Width];
@@ -147,6 +155,9 @@ namespace GM.Processing.Signal.Image
 		/// <param name="sourcePlane">The image plane from which to copy pixels.</param>
 		public void SetPixels(GMImagePlane sourcePlane)
 		{
+			if(sourcePlane == null) {
+				throw new ArgumentNullException(nameof(sourcePlane));
+			}
 			if(sourcePlane.Width != Width || sourcePlane.Height != Height) {
 				throw new ArgumentException("The source image plane must be of same size as this plane.", nameof(sourcePlane));
 			}
@@ -164,6 +175,10 @@ namespace GM.Processing.Signal.Image
 		/// <param name="step">The step with which to walk through the data.</param>
 		public static GMImagePlane Create(int width, int height, byte[] data, int offset = 0, int step = 1)
 		{
+			if(data == null) {
+				throw new ArgumentNullException(nameof(data));
+			}
+
 			var plane = new GMImagePlane(width, height);
 			int pos2 = offset;
 			for(int y = 0; y < height; y++) {
@@ -181,6 +196,10 @@ namespace GM.Processing.Signal.Image
 		/// <param name="doubles">Array of doubles.</param>
 		public static GMImagePlane FromDoubles(double[,] doubles)
 		{
+			if(doubles == null) {
+				throw new ArgumentNullException(nameof(doubles));
+			}
+
 			var plane = new GMImagePlane(doubles.GetLength(1), doubles.GetLength(0));
 			for(int y = plane.Height - 1; y >= 0; --y) {
 				for(int x = plane.Width - 1; x >= 0; --x) {

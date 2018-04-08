@@ -46,6 +46,10 @@ namespace GM.Processing.Signal.Image.ContrastEnhancement
 		/// <param name="clipLimit">A value that limits the amplification. Common values are between 3 and 4.</param>
 		public static void AdjustContrast(GMImage image, int tileSize = 128, double clipLimit = 0)
 		{
+			if(image == null) {
+				throw new ArgumentNullException(nameof(image));
+			}
+
 			if(image.IsGrayscale) {
 				AdjustContrastOfGrayscale(image, tileSize, clipLimit);
 			} else {
@@ -61,8 +65,11 @@ namespace GM.Processing.Signal.Image.ContrastEnhancement
 		/// </summary>
 		public static void AdjustContrastOfRGB(GMImage image, int tileSize = 128, double clipLimit = 0)
 		{
-			if(image.Planes.Count != 3) {
-				throw new ArgumentException("The image must have at least three planes.", nameof(image));
+			if(image == null) {
+				throw new ArgumentNullException(nameof(image));
+			}
+			if(!image.IsRGB) {
+				throw new ArgumentException("The image must be RGB.", nameof(image));
 			}
 
 			// convert to HSV
@@ -85,6 +92,10 @@ namespace GM.Processing.Signal.Image.ContrastEnhancement
 		/// <param name="clipLimit">A value that limits the amplification. Common values are between 3 and 4.</param>
 		public static void AdjustContrastOfGrayscale(GMImage image, int tileSize = 128, double clipLimit = 0)
 		{
+			if(image == null) {
+				throw new ArgumentNullException(nameof(image));
+			}
+
 			// apply the algorithm on the first plane
 			GMImagePlane firstPlane = image[0];
 			AdaptiveHistogramEqualizationImpl(firstPlane, tileSize, clipLimit);

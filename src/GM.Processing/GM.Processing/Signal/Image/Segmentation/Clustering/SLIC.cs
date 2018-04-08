@@ -48,6 +48,10 @@ namespace GM.Processing.Signal.Image.Segmentation.Clustering
 		/// <param name="m">Controlls the compactness of the superpixels. It allows us to weigh the relative importance between color similarity and spatial proximity. When this value is large, spatial proximity is more important and the resulting superpixels are more compact (i.e. they have a lower area to perimeter ratio). When this value is small, the resulting superpixels adhere more tightly to image boundaries, but have less regular size and shape. It should be in the range [1, 40].</param>
 		public static void Segmentize(GMImage image, int k,double m)
 		{
+			if(image == null) {
+				throw new ArgumentNullException(nameof(image));
+			}
+
 			Segmentize(image, k, m, out int[,] clusterIDs, out Color[] clusterColors);
 			image.ApplySegments(clusterIDs, clusterColors);
 		}
@@ -81,6 +85,10 @@ namespace GM.Processing.Signal.Image.Segmentation.Clustering
 
 		private static void SLICImpl(GMImage image, int k, double m, out int[,] clusterIDs, out Color[] clusterColors, out int[,] clusterCenters)
 		{
+			if(image == null) {
+				throw new ArgumentNullException(nameof(image));
+			}
+
 			// convert from RGB to CIELAB color space
 			double[,][] cielab = image.ToCIELAB();
 

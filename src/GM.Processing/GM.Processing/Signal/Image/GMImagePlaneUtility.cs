@@ -45,6 +45,10 @@ namespace GM.Processing.Signal.Image
 		/// <param name="plane">The image plane to convert.</param>
 		public static double[,] ToDoubles(this GMImagePlane plane)
 		{
+			if(plane == null) {
+				throw new ArgumentNullException(nameof(plane));
+			}
+
 			double[,] doubles = new double[plane.Height, plane.Width];
 			for(int y = plane.Height - 1; y >= 0; --y) {
 				for(int x = plane.Width - 1; x >= 0; --x) {

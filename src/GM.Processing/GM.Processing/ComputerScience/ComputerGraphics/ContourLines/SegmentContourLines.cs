@@ -26,6 +26,7 @@ Created: 2018-4-4
 Author: GregaMohorko
 */
 
+using System;
 using System.Drawing;
 using GM.Processing.Signal.Image;
 
@@ -48,6 +49,19 @@ namespace GM.Processing.ComputerScience.ComputerGraphics.ContourLines
 		/// <param name="contourColor">The color of the contour.</param>
 		public static void DrawContours(this GMImage image, int[,] segmentIDs, Color contourColor)
 		{
+			if(image == null) {
+				throw new ArgumentNullException(nameof(image));
+			}
+			if(segmentIDs == null) {
+				throw new ArgumentNullException(nameof(segmentIDs));
+			}
+			if(contourColor == null) {
+				throw new ArgumentNullException(nameof(contourColor));
+			}
+			if(segmentIDs.GetLength(1) != image.Width || segmentIDs.GetLength(0) != image.Height) {
+				throw new ArgumentException("The segment IDs must be of the same size as the image.", nameof(segmentIDs));
+			}
+
 			// determines whether a pixel at a specific position is already a contour
 			bool[,] isContour = new bool[image.Height, image.Width];
 
