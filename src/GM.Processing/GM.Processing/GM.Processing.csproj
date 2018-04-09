@@ -64,6 +64,7 @@
     <Compile Include="Signal\Image\Segmentation\Clustering\SLIC.cs" />
     <Compile Include="Utility\ColorUtility.cs" />
     <Compile Include="Utility\IEnumerableUtility.cs" />
+    <Compile Include="Utility\ReflectionUtility.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GM.Processing.licenseheader" />

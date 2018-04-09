@@ -27,6 +27,7 @@ Author: GregaMohorko
 */
 
 using System;
+using System.Threading;
 
 namespace GM.Processing.Signal.Image.ContrastEnhancement
 {
@@ -43,16 +44,17 @@ namespace GM.Processing.Signal.Image.ContrastEnhancement
 		/// </summary>
 		/// <param name="image">The image to adjust contrast to.</param>
 		/// <param name="clipLimit">A value that limits the amplification. Common values are between 3 and 4.</param>
-		public static void AdjustContrast(GMImage image, double clipLimit = 0)
+		/// <param name="cancellationToken">A cancellation token that can be used to cancel the process.</param>
+		public static void AdjustContrast(GMImage image, double clipLimit = 0, CancellationToken? cancellationToken=null)
 		{
 			if(image == null) {
 				throw new ArgumentNullException(nameof(image));
 			}
 
 			if(image.IsGrayscale) {
-				AdjustContrastOfGrayscale(image, clipLimit);
+				AdjustContrastOfGrayscale(image, clipLimit, cancellationToken);
 			} else {
-				AdjustContrastOfRGB(image, clipLimit);
+				AdjustContrastOfRGB(image, clipLimit, cancellationToken);
 			}
 		}
 
@@ -61,7 +63,8 @@ namespace GM.Processing.Signal.Image.ContrastEnhancement
 		/// </summary>
 		/// <param name="image">The image to adjust contrast to.</param>
 		/// <param name="clipLimit">A value that limits the amplification. Common values are between 3 and 4.</param>
-		public static void AdjustContrastOfRGB(GMImage image, double clipLimit = 0)
+		/// <param name="cancellationToken">A cancellation token that can be used to cancel the process.</param>
+		public static void AdjustContrastOfRGB(GMImage image, double clipLimit = 0, CancellationToken? cancellationToken = null)
 		{
 			if(image == null) {
 				throw new ArgumentNullException(nameof(image));
@@ -75,7 +78,7 @@ namespace GM.Processing.Signal.Image.ContrastEnhancement
 			// transform the values from double to byte
 			var valuePlane = GMImagePlane.FromDoubles(values);
 			// apply the algorithm on the value plane
-			HistogramEqualizationImpl(valuePlane, clipLimit);
+			HistogramEqualizationImpl(valuePlane, clipLimit, cancellationToken ?? CancellationToken.None);
 			// transform the values back to double
 			values = valuePlane.ToDoubles();
 			// apply colors
@@ -87,7 +90,8 @@ namespace GM.Processing.Signal.Image.ContrastEnhancement
 		/// </summary>
 		/// <param name="image">The image to adjust contrast to.</param>
 		/// <param name="clipLimit">A value that limits the amplification. Common values are between 3 and 4.</param>
-		public static void AdjustContrastOfGrayscale(GMImage image, double clipLimit = 0)
+		/// <param name="cancellationToken">A cancellation token that can be used to cancel the process.</param>
+		public static void AdjustContrastOfGrayscale(GMImage image, double clipLimit = 0, CancellationToken? cancellationToken = null)
 		{
 			if(image == null) {
 				throw new ArgumentNullException(nameof(image));
@@ -95,13 +99,13 @@ namespace GM.Processing.Signal.Image.ContrastEnhancement
 
 			// apply the algorithm on the first plane
 			GMImagePlane firstPlane = image[0];
-			HistogramEqualizationImpl(firstPlane, clipLimit);
+			HistogramEqualizationImpl(firstPlane, clipLimit, cancellationToken??CancellationToken.None);
 
 			// apply it to all other bit planes
 			image.ApplyOneBitPlaneToAllOtherColorBitPlanes(0);
 		}
 
-		private static void HistogramEqualizationImpl(GMImagePlane plane, double clipLimit)
+		private static void HistogramEqualizationImpl(GMImagePlane plane, double clipLimit, CancellationToken cancellationToken)
 		{
 			var histogram = ImageHistogram.Get(plane);
 
@@ -116,6 +120,10 @@ namespace GM.Processing.Signal.Image.ContrastEnhancement
 			int cdf = -1;
 
 			var equalizations = new byte[256];
+
+			if(cancellationToken.IsCancellationRequested) {
+				return;
+			}
 
 			int occurenceCount;
 			for(int value = 0; value < 256; ++value) {
@@ -136,11 +144,18 @@ namespace GM.Processing.Signal.Image.ContrastEnhancement
 				equalizations[value] = (byte)Math.Round(((cdf - cdfMin) / MxN1) * 255);
 			}
 
-			// apply new values to the bit plane
+			if(cancellationToken.IsCancellationRequested) {
+				return;
+			}
+
+			// apply new values to the image plane
 			byte currentValue;
 			byte newValue;
 			int x;
 			for(int y = plane.Height - 1; y >= 0; --y) {
+				if(cancellationToken.IsCancellationRequested) {
+					return;
+				}
 				for(x = plane.Width - 1; x >= 0; --x) {
 					currentValue = plane[x, y];
 					newValue = equalizations[currentValue];

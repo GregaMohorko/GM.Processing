@@ -27,6 +27,7 @@ Author: GregaMohorko
 */
 
 using System;
+using System.Threading;
 
 namespace GM.Processing.Signal.Image.ContrastEnhancement
 {
@@ -44,16 +45,17 @@ namespace GM.Processing.Signal.Image.ContrastEnhancement
 		/// <param name="image">The image to adjust contrast adaptively to.</param>
 		/// <param name="tileSize">The size of the neighbourhood region. It constitutes a characteristic length scale: contrast at smaller scales is enhanced, while contrast at larger scales is reduced.</param>
 		/// <param name="clipLimit">A value that limits the amplification. Common values are between 3 and 4.</param>
-		public static void AdjustContrast(GMImage image, int tileSize = 128, double clipLimit = 0)
+		/// <param name="cancellationToken">A cancellation token that can be used to cancel the process.</param>
+		public static void AdjustContrast(GMImage image, int tileSize = 128, double clipLimit = 0, CancellationToken? cancellationToken = null)
 		{
 			if(image == null) {
 				throw new ArgumentNullException(nameof(image));
 			}
 
 			if(image.IsGrayscale) {
-				AdjustContrastOfGrayscale(image, tileSize, clipLimit);
+				AdjustContrastOfGrayscale(image, tileSize, clipLimit, cancellationToken);
 			} else {
-				AdjustContrastOfRGB(image, tileSize, clipLimit);
+				AdjustContrastOfRGB(image, tileSize, clipLimit, cancellationToken);
 			}
 		}
 
@@ -62,8 +64,9 @@ namespace GM.Processing.Signal.Image.ContrastEnhancement
 		/// <param name="image">The image to adjust contrast adaptively to.</param>
 		/// <param name="tileSize">The size of the neighbourhood region. It constitutes a characteristic length scale: contrast at smaller scales is enhanced, while contrast at larger scales is reduced.</param>
 		/// <param name="clipLimit">A value that limits the amplification. Common values are between 3 and 4.</param>
+		/// <param name="cancellationToken">A cancellation token that can be used to cancel the process.</param>
 		/// </summary>
-		public static void AdjustContrastOfRGB(GMImage image, int tileSize = 128, double clipLimit = 0)
+		public static void AdjustContrastOfRGB(GMImage image, int tileSize = 128, double clipLimit = 0, CancellationToken? cancellationToken = null)
 		{
 			if(image == null) {
 				throw new ArgumentNullException(nameof(image));
@@ -77,7 +80,7 @@ namespace GM.Processing.Signal.Image.ContrastEnhancement
 			// transform the values from double to byte
 			var valuePlane = GMImagePlane.FromDoubles(values);
 			// apply the algorithm on the value plane
-			AdaptiveHistogramEqualizationImpl(valuePlane, tileSize, clipLimit);
+			AdaptiveHistogramEqualizationImpl(valuePlane, tileSize, clipLimit, cancellationToken??CancellationToken.None);
 			// transform the values back to double
 			values = valuePlane.ToDoubles();
 			// apply colors
@@ -90,7 +93,8 @@ namespace GM.Processing.Signal.Image.ContrastEnhancement
 		/// <param name="image">The image to adjust contrast adaptively to.</param>
 		/// <param name="tileSize">The size of the neighbourhood region. It constitutes a characteristic length scale: contrast at smaller scales is enhanced, while contrast at larger scales is reduced.</param>
 		/// <param name="clipLimit">A value that limits the amplification. Common values are between 3 and 4.</param>
-		public static void AdjustContrastOfGrayscale(GMImage image, int tileSize = 128, double clipLimit = 0)
+		/// <param name="cancellationToken">A cancellation token that can be used to cancel the process.</param>
+		public static void AdjustContrastOfGrayscale(GMImage image, int tileSize = 128, double clipLimit = 0, CancellationToken? cancellationToken = null)
 		{
 			if(image == null) {
 				throw new ArgumentNullException(nameof(image));
@@ -98,13 +102,13 @@ namespace GM.Processing.Signal.Image.ContrastEnhancement
 
 			// apply the algorithm on the first plane
 			GMImagePlane firstPlane = image[0];
-			AdaptiveHistogramEqualizationImpl(firstPlane, tileSize, clipLimit);
+			AdaptiveHistogramEqualizationImpl(firstPlane, tileSize, clipLimit, cancellationToken??CancellationToken.None);
 
 			// apply it to all other bit planes
 			image.ApplyOneBitPlaneToAllOtherColorBitPlanes(0);
 		}
 
-		private static void AdaptiveHistogramEqualizationImpl(GMImagePlane plane, int tileSize, double clipLimit)
+		private static void AdaptiveHistogramEqualizationImpl(GMImagePlane plane, int tileSize, double clipLimit, CancellationToken cancellationToken)
 		{
 			var newPlane = new GMImagePlane(plane);
 
@@ -145,6 +149,10 @@ namespace GM.Processing.Signal.Image.ContrastEnhancement
 			while(true) {
 				// horizontal movement
 				while(true) {
+					if(cancellationToken.IsCancellationRequested) {
+						return;
+					}
+
 					// transform the pixel
 					if(clipLimit <= 0) {
 						histogram = window;

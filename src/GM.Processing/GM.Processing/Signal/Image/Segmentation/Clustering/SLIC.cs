@@ -29,6 +29,7 @@ Author: GregaMohorko
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Threading;
 using GM.Processing.Utility;
 
 namespace GM.Processing.Signal.Image.Segmentation.Clustering
@@ -46,13 +47,14 @@ namespace GM.Processing.Signal.Image.Segmentation.Clustering
 		/// <param name="image">The image to segment.</param>
 		/// <param name="k">The desired number of approximately equally-sized superpixels.</param>
 		/// <param name="m">Controlls the compactness of the superpixels. It allows us to weigh the relative importance between color similarity and spatial proximity. When this value is large, spatial proximity is more important and the resulting superpixels are more compact (i.e. they have a lower area to perimeter ratio). When this value is small, the resulting superpixels adhere more tightly to image boundaries, but have less regular size and shape. It should be in the range [1, 40].</param>
-		public static void Segmentize(GMImage image, int k,double m)
+		/// <param name="cancellationToken">A cancellation token that can be used to cancel the process.</param>
+		public static void Segmentize(GMImage image, int k,double m, CancellationToken? cancellationToken=null)
 		{
 			if(image == null) {
 				throw new ArgumentNullException(nameof(image));
 			}
 
-			Segmentize(image, k, m, out int[,] clusterIDs, out Color[] clusterColors);
+			Segmentize(image, k, m, out int[,] clusterIDs, out Color[] clusterColors, cancellationToken);
 			image.ApplySegments(clusterIDs, clusterColors);
 		}
 
@@ -64,9 +66,10 @@ namespace GM.Processing.Signal.Image.Segmentation.Clustering
 		/// <param name="m">Controlls the compactness of the superpixels. It allows us to weigh the relative importance between color similarity and spatial proximity. When this value is large, spatial proximity is more important and the resulting superpixels are more compact (i.e. they have a lower area to perimeter ratio). When this value is small, the resulting superpixels adhere more tightly to image boundaries, but have less regular size and shape. It should be in the range [1, 40].</param>
 		/// <param name="clusterIDs">An array of the same size as the provided image which holds the IDs of the clusters. Use these values as indexes for clusterColors.</param>
 		/// <param name="clusterColors">The cluster colors (RGB).</param>
-		public static void Segmentize(GMImage image,int k,double m,out int[,] clusterIDs,out Color[] clusterColors)
+		/// <param name="cancellationToken">A cancellation token that can be used to cancel the process.</param>
+		public static void Segmentize(GMImage image,int k,double m,out int[,] clusterIDs,out Color[] clusterColors, CancellationToken? cancellationToken = null)
 		{
-			Segmentize(image, k, m, out clusterIDs, out clusterColors, out int[,] clusterCenters);
+			Segmentize(image, k, m, out clusterIDs, out clusterColors, out int[,] clusterCenters, cancellationToken);
 		}
 
 		/// <summary>
@@ -78,12 +81,13 @@ namespace GM.Processing.Signal.Image.Segmentation.Clustering
 		/// <param name="clusterIDs">An array of the same size as the provided image which holds the IDs of the clusters. Use these values as indexes for clusterColors.</param>
 		/// <param name="clusterColors">The cluster colors (RGB).</param>
 		/// <param name="clusterCenters">The center positions of the clusters.</param>
-		public static void Segmentize(GMImage image,int k,double m,out int[,] clusterIDs,out Color[] clusterColors,out int[,] clusterCenters)
+		/// <param name="cancellationToken">A cancellation token that can be used to cancel the process.</param>
+		public static void Segmentize(GMImage image,int k,double m,out int[,] clusterIDs,out Color[] clusterColors,out int[,] clusterCenters, CancellationToken? cancellationToken = null)
 		{
-			SLICImpl(image, k, m, out clusterIDs, out clusterColors, out clusterCenters);
+			SLICImpl(image, k, m, out clusterIDs, out clusterColors, out clusterCenters,cancellationToken??CancellationToken.None);
 		}
 
-		private static void SLICImpl(GMImage image, int k, double m, out int[,] clusterIDs, out Color[] clusterColors, out int[,] clusterCenters)
+		private static void SLICImpl(GMImage image, int k, double m, out int[,] clusterIDs, out Color[] clusterColors, out int[,] clusterCenters, CancellationToken cancellationToken)
 		{
 			if(image == null) {
 				throw new ArgumentNullException(nameof(image));
@@ -141,6 +145,13 @@ namespace GM.Processing.Signal.Image.Segmentation.Clustering
 				for(int y = image.Height - Math.Max(verticalMargin, 1); y >= yStart; y -= S) {
 					int ySafe = Math.Max(y, 0);
 					for(int x = xEnd; x >= xStart; x -= S) {
+						if(cancellationToken.IsCancellationRequested) {
+							clusterIDs = null;
+							clusterColors = null;
+							clusterCenters = null;
+							return;
+						}
+
 						if(i == k) {
 							y = -1;
 							break;
@@ -217,6 +228,13 @@ namespace GM.Processing.Signal.Image.Segmentation.Clustering
 					}
 				}
 
+				if(cancellationToken.IsCancellationRequested) {
+					clusterIDs = null;
+					clusterColors = null;
+					clusterCenters = null;
+					return;
+				}
+
 				// for each cluster center
 				for(int j = k - 1; j >= 0; --j) {
 					// Since the expected spatial extent of a superpixel is a region of approximate size S × S, the search for similar pixels is done in a region 2S × 2S around the superpixel center.
@@ -255,6 +273,13 @@ namespace GM.Processing.Signal.Image.Segmentation.Clustering
 				}
 				#endregion CLUSTER ASSIGNMENT
 
+				if(cancellationToken.IsCancellationRequested) {
+					clusterIDs = null;
+					clusterColors = null;
+					clusterCenters = null;
+					return;
+				}
+
 				#region UPDATE
 				// Once each pixel has been associated to the nearest cluster center, an update step adjusts the cluster centers to be the mean [l a b x y] vector of all the pixels belonging to the cluster.
 
@@ -282,6 +307,13 @@ namespace GM.Processing.Signal.Image.Segmentation.Clustering
 						clusterCenters[currentCluster, 1] += x;
 						++centerCounts[currentCluster];
 					}
+				}
+
+				if(cancellationToken.IsCancellationRequested) {
+					clusterIDs = null;
+					clusterColors = null;
+					clusterCenters = null;
+					return;
 				}
 
 				// Then, normalize the clusters to get the mean values

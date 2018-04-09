@@ -1,0 +1,75 @@
+﻿<!--
+MIT License
+
+Copyright (c) 2018 Grega Mohorko
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Project: GM.Processing.Examples
+Created: 2018-4-9
+Author: GregaMohorko
+-->
+
+<controls:BaseControl x:Class="GM.Processing.Examples.Signal.Image.Segmentation.Clustering.SLIC"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:controls="clr-namespace:GM.WPF.Controls;assembly=GM.WPF"
+		xmlns:local="clr-namespace:GM.Processing.Examples.Signal.Image.Segmentation.Clustering"
+		mc:Ignorable="d"
+		d:DesignHeight="450"
+		d:DesignWidth="800"
+		d:DataContext="{d:DesignInstance Type=local:SLICViewModel, IsDesignTimeCreatable=True}"
+		>
+	<Grid Margin="10">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition />
+		</Grid.RowDefinitions>
+		<StackPanel Orientation="Vertical">
+			<StackPanel Orientation="Horizontal">
+				<Button Command="{Binding Command_SelectDirectory,Mode=OneWay}" Content="Select directory with images to process ..." Padding="10" />
+			</StackPanel>
+			<DockPanel Margin="0 10 0 0">
+				<Label Content="Directory:" DockPanel.Dock="Left" FontWeight="Bold" />
+				<TextBox Text="{Binding Directory,Mode=OneWay}" IsReadOnly="True" VerticalContentAlignment="Center" />
+			</DockPanel>
+		</StackPanel>
+		<StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0 10">
+			<GroupBox Header="Settings" Padding="10">
+				<StackPanel Orientation="Horizontal">
+					<CheckBox IsChecked="{Binding Overwrite,Mode=TwoWay}" IsEnabled="{Binding CanEditSettings,Mode=OneWay}" Content="Overwrite" ToolTip="Determines whether it should overwrite already processed images, or skip them." VerticalAlignment="Center" />
+					<StackPanel Orientation="Vertical" Margin="10 0 0 0">
+						<Label Content="Thread count:" />
+						<ComboBox ItemsSource="{Binding ThreadCountItems,Mode=OneTime}" SelectedItem="{Binding ThreadCount,Mode=TwoWay}" IsEnabled="{Binding CanEditSettings,Mode=OneWay}" />
+					</StackPanel>
+				</StackPanel>
+			</GroupBox>
+			<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+				<Button Command="{Binding Command_Run,Mode=OneWay}" Content="Run" Padding="10" Margin="10 0 0 0" />
+				<Button Command="{Binding Command_Cancel,Mode=OneWay}" Content="Cancel" Padding="10" Margin="10 0 0 0" />
+			</StackPanel>
+		</StackPanel>
+		<Label Content="Log:" Grid.Row="2" FontWeight="Bold" />
+		<TextBox Text="{Binding Log,Mode=OneWay}" Grid.Row="3" IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" />
+	</Grid>
+</controls:BaseControl>
