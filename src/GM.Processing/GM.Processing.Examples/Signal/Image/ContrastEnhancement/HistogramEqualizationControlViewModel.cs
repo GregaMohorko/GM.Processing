@@ -37,6 +37,7 @@ using System.Windows.Forms;
 using GalaSoft.MvvmLight.CommandWpf;
 using GM.Processing.Examples.Common;
 using GM.Processing.Signal.Image;
+using GM.Processing.Signal.Image.ContrastEnhancement;
 
 namespace GM.Processing.Examples.Signal.Image.ContrastEnhancement
 {
@@ -185,7 +186,10 @@ namespace GM.Processing.Examples.Signal.Image.ContrastEnhancement
 					string CLHEfileName = Path.GetFileName(CLHEfilePath);
 					var CLHE = new GMImage(image);
 					LogLine($"Processing {CLHEfileName} ...");
-					Processing.Signal.Image.ContrastEnhancement.HistogramEqualization.AdjustContrast(CLHE,clipLimit, cancellationTokenSource.Token);
+					HistogramEqualization.AdjustContrast(CLHE,clipLimit, cancellationTokenSource.Token);
+					if(cancellationTokenSource.IsCancellationRequested) {
+						break;
+					}
 					CLHE.Save(CLHEfilePath);
 					LogLine($"Finished {CLHEfileName}.");
 				}

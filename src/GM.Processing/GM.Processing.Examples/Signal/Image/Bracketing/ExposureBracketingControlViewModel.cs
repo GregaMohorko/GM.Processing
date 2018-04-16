@@ -176,13 +176,13 @@ namespace GM.Processing.Examples.Signal.Image.Bracketing
 				Progress = (i + 1) / (double)imageFiles.Count;
 			}
 
-			string reconstructedFileName = Path.GetFileName(Directory) + " - EXPOSURE BRACKETING.png";
+			string reconstructedFileName = Path.GetFileName(Directory) + $" - EXPOSURE BRACKETING N={SampleCount}, sampleCount={SampleCount}.png";
 			string reconstructedFilePath = Path.Combine(Directory, reconstructedFileName);
 
 			LogLine("Processing ...");
 			Progress = 0;
 
-			GMImage reconstructedImage = ExposureBracketing.ReconstructHDR(hdrImages.ToArray(), Smoothness, SampleCount, cancellationTokenSource.Token, (prog) => { Progress = prog; });
+			GMImage reconstructedImage = ExposureBracketing.ReconstructHDR(hdrImages.ToArray(), SampleCount, Smoothness, cancellationTokenSource.Token, (prog) => { Progress = prog; });
 			if(cancellationTokenSource==null || cancellationTokenSource.IsCancellationRequested) {
 				return;
 			}

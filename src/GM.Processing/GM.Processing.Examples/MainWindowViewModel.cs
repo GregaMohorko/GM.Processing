@@ -33,8 +33,6 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using GM.WPF.MVVM;
-using GM.Processing.Utility;
-using System.Windows.Controls;
 
 namespace GM.Processing.Examples
 {

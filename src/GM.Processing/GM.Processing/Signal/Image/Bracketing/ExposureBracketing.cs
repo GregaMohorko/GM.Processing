@@ -47,12 +47,12 @@ namespace GM.Processing.Signal.Image.Bracketing
 		/// Reconstructs the High Dynamic Range radiance image from the specified images.
 		/// </summary>
 		/// <param name="images">A number of digitized photographs taken from the same vantage point with different known exposure durations.</param>
-		/// <param name="smoothness">Determines the amount of smoothness. It weights the smoothness term relative to the data fitting term, and should be chosen appropriately for the amount of noise expected in the measurements.</param>
 		/// <param name="N">Number of random pixel locations to sample from. Computational complexity considerations make it impractical to use every pixel location in this algorithm.</param>
+		/// <param name="smoothness">Determines the amount of smoothness. It weights the smoothness term relative to the data fitting term, and should be chosen appropriately for the amount of noise expected in the measurements.</param>
 		/// <param name="cancellationToken">A cancellation token that can be used to cancel the process.</param>
 		/// <param name="progress">An action to report the progress [0.0-1.0].</param>
 		/// <param name="rand">The <see cref="Random"/> object to use for generating random pixel locations.</param>
-		public static GMImage ReconstructHDR(GMImage[] images, int smoothness=10, int N=256, CancellationToken? cancellationToken=null, Action<double> progress=null, Random rand=null)
+		public static GMImage ReconstructHDR(GMImage[] images, int N = 256, int smoothness=10, CancellationToken? cancellationToken=null, Action<double> progress=null, Random rand=null)
 		{
 			if(images == null) {
 				throw new ArgumentNullException(nameof(images));

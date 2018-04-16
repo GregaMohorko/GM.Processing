@@ -192,7 +192,10 @@ namespace GM.Processing.Examples.Signal.Image.ContrastEnhancement
 						string CLAHEfileName = Path.GetFileName(CLAHEfilePath);
 						var CLAHE = new GMImage(image);
 						LogLine($"Processing {CLAHEfileName} ...");
-						Processing.Signal.Image.ContrastEnhancement.AdaptiveHistogramEqualization.AdjustContrast(CLAHE, tileSize, clipLimit, cancellationTokenSource.Token);
+						AdaptiveHistogramEqualization.AdjustContrast(CLAHE, tileSize, clipLimit, cancellationTokenSource.Token);
+						if(cancellationTokenSource.IsCancellationRequested) {
+							break;
+						}
 						CLAHE.Save(CLAHEfilePath);
 						LogLine($"Finished {CLAHEfileName}.");
 					}
