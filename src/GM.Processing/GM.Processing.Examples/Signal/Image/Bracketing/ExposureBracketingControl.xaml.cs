@@ -21,29 +21,44 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-Project: GM.Processing
-Created: 2018-4-9
+Project: GM.Processing.Examples
+Created: 2018-4-10
 Author: GregaMohorko
 */
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using GM.WPF.Controls;
 
-namespace GM.Processing.Utility
+namespace GM.Processing.Examples.Signal.Image.Bracketing
 {
-	public static class ReflectionUtility
+	public class ExposureBracketingAlgorithm : IAlgorithm
 	{
-		/// <summary>
-		/// Gets all the namespaces in this assembly.
-		/// </summary>
-		/// <param name="assembly">The assembly.</param>
-		public static IEnumerable<string> GetNamespaces(this Assembly assembly)
+		public string Name => "Exposure Bracketing";
+		public string NameShort => Name;
+		public Type UserControlType => typeof(ExposureBracketingControl);
+	}
+
+	public partial class ExposureBracketingControl : BaseControl
+	{
+		public ExposureBracketingControl()
 		{
-			return assembly.GetTypes().Select(t => t.Namespace);
+			InitializeComponent();
+
+			var vm = new ExposureBracketingControlViewModel();
+			ViewModel = vm;
 		}
 	}
 }

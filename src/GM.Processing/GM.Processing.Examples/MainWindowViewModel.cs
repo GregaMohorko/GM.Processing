@@ -63,7 +63,9 @@ namespace GM.Processing.Examples
 			Assembly assembly = (typeof(MainWindowViewModel)).Assembly;
 			Type[] types=assembly.GetTypes();
 
-			var algorithmTypes=types.Where(t => t.IsClass && !t.IsAbstract && iAlgorithmType.IsAssignableFrom(t));
+			var algorithmTypes=types
+				.Where(t => t.IsClass && !t.IsAbstract && iAlgorithmType.IsAssignableFrom(t))
+				.OrderBy(t => t.FullName);
 
 			var algorithms = new List<IAlgorithm>();
 			foreach(Type algorithmType in algorithmTypes) {

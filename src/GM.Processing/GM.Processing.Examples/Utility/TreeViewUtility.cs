@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 Project: GM.Processing.Examples
-Created: 2018-4-9
+Created: 2018-4-10
 Author: GregaMohorko
 */
 
@@ -31,40 +31,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using GM.WPF.Controls;
 
-namespace GM.Processing.Examples.Signal.Image.ContrastEnhancement
+namespace GM.Processing.Examples.Utility
 {
-	public class AdaptiveHistogramEqualizationAlgorithm : IAlgorithm
+	// FIXME GM.WPF
+
+	/// <summary>
+	/// Utilities for <see cref="TreeView"/>.
+	/// </summary>
+	public static class TreeViewUtility
 	{
-		public string Name => "(Contrast Limited) Adaptive Histogram Equalization ((CL)AHE)";
-		public string NameShort => "(CL)AHE";
-		public Type UserControlType => typeof(AdaptiveHistogramEqualization);
-	}
-
-	public partial class AdaptiveHistogramEqualization : BaseControl, IDisposable
-	{
-		public AdaptiveHistogramEqualization()
+		/// <summary>
+		/// Selects this <see cref="TreeViewItem"/>. It also expands the <see cref="TreeView"/> items to this item..
+		/// </summary>
+		/// <param name="treeViewItem">The item to select and expand to.</param>
+		public static void Select(this TreeViewItem treeViewItem)
 		{
-			InitializeComponent();
-
-			var vm = new AdaptiveHistogramEqualizationViewModel();
-			ViewModel = vm;
-		}
-
-		public void Dispose()
-		{
-			var vm = (AdaptiveHistogramEqualizationViewModel)ViewModel;
-			vm.Dispose();
+			// expand all parents
+			TreeViewItem parent = treeViewItem.Parent as TreeViewItem;
+			while(parent != null) {
+				parent.IsExpanded = true;
+				parent = parent.Parent as TreeViewItem;
+			}
+			// select the item
+			treeViewItem.IsSelected = true;
 		}
 	}
 }

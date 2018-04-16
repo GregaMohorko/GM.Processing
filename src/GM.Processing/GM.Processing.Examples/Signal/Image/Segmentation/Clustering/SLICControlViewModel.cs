@@ -28,6 +28,7 @@ Author: GregaMohorko
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -35,15 +36,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using GalaSoft.MvvmLight.CommandWpf;
+using GM.Processing.ComputerScience.ComputerGraphics.ContourLines;
 using GM.Processing.Examples.Common;
 using GM.Processing.Signal.Image;
+using GM.Processing.Signal.Image.Segmentation.Clustering;
 
-namespace GM.Processing.Examples.Signal.Image.ContrastEnhancement
+namespace GM.Processing.Examples.Signal.Image.Segmentation.Clustering
 {
-	class HistogramEqualizationViewModel:LoggableViewModel,IDisposable
+	class SLICControlViewModel:LoggableViewModel,IDisposable
 	{
-		private static readonly double[] clipLimits = { 1, 2, 3, 3.5, 4, 8 };
-
 		public RelayCommand Command_SelectDirectory { get; private set; }
 		public RelayCommand Command_Run { get; private set; }
 		public RelayCommand Command_Cancel { get; private set; }
@@ -59,7 +60,7 @@ namespace GM.Processing.Examples.Signal.Image.ContrastEnhancement
 		private volatile object imageFiles_lock = new object();
 		private CancellationTokenSource cancellationTokenSource;
 
-		public HistogramEqualizationViewModel()
+		public SLICControlViewModel()
 		{
 			ThreadCountItems = Enumerable.Range(1, Environment.ProcessorCount).ToList();
 			ThreadCount = Math.Max(1, Environment.ProcessorCount / 2);
@@ -69,9 +70,9 @@ namespace GM.Processing.Examples.Signal.Image.ContrastEnhancement
 			if(IsInDesignMode) {
 				return;
 			}
-			
+
 			Command_SelectDirectory = new RelayCommand(SelectDirectory, () => CanEditSettings);
-			Command_Run = new RelayCommand(Run, () => Directory!=null && CanEditSettings);
+			Command_Run = new RelayCommand(Run, () => Directory != null && CanEditSettings);
 			Command_Cancel = new RelayCommand(Cancel, () => Directory != null && !CanEditSettings);
 		}
 
@@ -84,7 +85,7 @@ namespace GM.Processing.Examples.Signal.Image.ContrastEnhancement
 
 		private void SelectDirectory()
 		{
-			using(var dialog=new FolderBrowserDialog()) {
+			using(var dialog = new FolderBrowserDialog()) {
 				dialog.ShowNewFolderButton = false;
 				if(dialog.ShowDialog() != DialogResult.OK) {
 					return;
@@ -110,7 +111,7 @@ namespace GM.Processing.Examples.Signal.Image.ContrastEnhancement
 				.Where(f =>
 				{
 					string fileName = Path.GetFileNameWithoutExtension(f);
-					return !fileName.Contains(" - CLHE cl=") && !fileName.Contains(" - HE");
+					return !fileName.Contains(" - SEGMENTED ");
 				}).ToList();
 
 			if(imageFiles.Count == 0) {
@@ -123,11 +124,11 @@ namespace GM.Processing.Examples.Signal.Image.ContrastEnhancement
 
 			var tasks = new Task[ThreadCount];
 			for(int i = 0; i < tasks.Length; ++i) {
-				tasks[i]=Task.Run((Action)ThreadWork,cancellationTokenSource.Token);
+				tasks[i] = Task.Run((Action)ThreadWork, cancellationTokenSource.Token);
 			}
 			await Task.WhenAll(tasks);
-
-			LogLine(cancellationTokenSource.IsCancellationRequested ? "Cancelled." : "Finished.");
+			
+			LogLine(cancellationTokenSource.IsCancellationRequested?"Cancelled.":"Finished.");
 			cancellationTokenSource?.Dispose();
 			cancellationTokenSource = null;
 			CanEditSettings = true;
@@ -161,33 +162,50 @@ namespace GM.Processing.Examples.Signal.Image.ContrastEnhancement
 
 				string baseImageFile = Path.Combine(Directory, Path.GetFileNameWithoutExtension(imageFile));
 
-				// HE
-				string HEfilePath = baseImageFile + " - HE.png";
-				if(Overwrite || !File.Exists(HEfilePath)) {
-					string HEfileName = Path.GetFileName(HEfilePath);
-					var HE = new GMImage(image);
-					LogLine($"Processing {HEfileName} ...");
-					Processing.Signal.Image.ContrastEnhancement.HistogramEqualization.AdjustContrast(HE,0,cancellationTokenSource.Token);
-					HE.Save(HEfilePath);
-					LogLine($"Finished {HEfileName}.");
-				}
-
-				// CLHE
-				for(int i = 0; i < clipLimits.Length; ++i) {
+				for(int segmentCount = 2; segmentCount <= 1024; segmentCount <<= 1) {
 					if(cancellationTokenSource.IsCancellationRequested) {
 						break;
 					}
-					double clipLimit = clipLimits[i];
-					string CLHEfilePath = baseImageFile + $" - CLHE cl={clipLimit.ToString("N2")}.png";
-					if(!Overwrite && File.Exists(CLHEfilePath)) {
-						continue;
+					for(int compactness = 1; compactness <= 40; ++compactness) {
+						string currentFilePath = baseImageFile + $" - SEGMENTED k={segmentCount}, m={compactness}.png";
+						string contourFilePath = baseImageFile + $" - SEGMENTED CONTOURS k={segmentCount}, m={compactness}.png";
+						bool segmentFileExists = File.Exists(currentFilePath);
+						bool contourFileExists = File.Exists(contourFilePath);
+						if(!Overwrite && (segmentFileExists && contourFileExists)) {
+							continue;
+						}
+
+						string currentFileName = Path.GetFileName(currentFilePath);
+						LogLine($"Processing {currentFileName} ...");
+
+						GMImage currentImage = new GMImage(image);
+						int[,] clusterIDs;
+						Color[] clusterColors;
+						int[,] clusterCenters;
+						try {
+							SLIC.Segmentize(currentImage, segmentCount, compactness, out clusterIDs, out clusterColors, out clusterCenters, cancellationTokenSource.Token);
+						}catch(ArgumentOutOfRangeException e) {
+							if(e.ParamName == "k") {
+								continue;
+							}
+							throw e;
+						}
+
+						if(cancellationTokenSource.IsCancellationRequested) {
+							break;
+						}
+
+						currentImage.ApplySegments(clusterIDs, clusterColors);
+						if(Overwrite || !segmentFileExists) {
+							currentImage.Save(currentFilePath);
+						}
+						if(!Overwrite && contourFileExists) {
+							continue;
+						}
+						SegmentContourLines.DrawContours(currentImage, clusterIDs, Color.Black);
+						currentImage.DrawSquares(clusterCenters, 5, Color.GreenYellow, Color.Red);
+						currentImage.Save(contourFilePath);
 					}
-					string CLHEfileName = Path.GetFileName(CLHEfilePath);
-					var CLHE = new GMImage(image);
-					LogLine($"Processing {CLHEfileName} ...");
-					Processing.Signal.Image.ContrastEnhancement.HistogramEqualization.AdjustContrast(CLHE,clipLimit, cancellationTokenSource.Token);
-					CLHE.Save(CLHEfilePath);
-					LogLine($"Finished {CLHEfileName}.");
 				}
 			}
 		}

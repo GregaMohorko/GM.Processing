@@ -44,26 +44,26 @@ using GM.WPF.Controls;
 
 namespace GM.Processing.Examples.Signal.Image.ContrastEnhancement
 {
-	public class HistogramEqualizationAlgorithm : IAlgorithm
+	public class AdaptiveHistogramEqualizationAlgorithm : IAlgorithm
 	{
-		public string Name => "(Contrast Limited) Histogram Equalization ((CL)HE)";
-		public string NameShort => "(CL)HE";
-		public Type UserControlType => typeof(HistogramEqualization);
+		public string Name => "(Contrast Limited) Adaptive Histogram Equalization ((CL)AHE)";
+		public string NameShort => "(CL)AHE";
+		public Type UserControlType => typeof(AdaptiveHistogramEqualizationControl);
 	}
 
-	public partial class HistogramEqualization : BaseControl, IDisposable
+	public partial class AdaptiveHistogramEqualizationControl : BaseControl, IDisposable
 	{
-		public HistogramEqualization()
+		public AdaptiveHistogramEqualizationControl()
 		{
 			InitializeComponent();
 
-			var vm = new HistogramEqualizationViewModel();
+			var vm = new AdaptiveHistogramEqualizationControlViewModel();
 			ViewModel = vm;
 		}
 
 		public void Dispose()
 		{
-			var vm = (HistogramEqualizationViewModel)ViewModel;
+			var vm = (AdaptiveHistogramEqualizationControlViewModel)ViewModel;
 			vm.Dispose();
 		}
 	}

@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<!--
+﻿/*
 MIT License
 
 Copyright (c) 2018 Grega Mohorko
@@ -25,23 +24,47 @@ SOFTWARE.
 Project: GM.Processing.Examples
 Created: 2018-4-9
 Author: GregaMohorko
--->
+*/
 
-<configuration>
-    <startup> 
-        <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.6.1" />
-    </startup>
-  <runtime>
-    <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
-      <dependentAssembly>
-        <assemblyIdentity name="CommonServiceLocator" publicKeyToken="489b6accfaf20ef0" culture="neutral" />
-        <bindingRedirect oldVersion="0.0.0.0-2.0.3.0" newVersion="2.0.3.0" />
-      </dependentAssembly>
-      <dependentAssembly>
-        <assemblyIdentity name="GM.Utility" publicKeyToken="a1ae152199607549" culture="neutral" />
-        <bindingRedirect oldVersion="0.0.0.0-1.2.6.0" newVersion="1.2.6.0" />
-      </dependentAssembly>
-    </assemblyBinding>
-  </runtime>
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using GM.WPF.Controls;
 
-</configuration>
+namespace GM.Processing.Examples.Signal.Image.ContrastEnhancement
+{
+	public class HistogramEqualizationAlgorithm : IAlgorithm
+	{
+		public string Name => "(Contrast Limited) Histogram Equalization ((CL)HE)";
+		public string NameShort => "(CL)HE";
+		public Type UserControlType => typeof(HistogramEqualizationControl);
+	}
+
+	public partial class HistogramEqualizationControl : BaseControl, IDisposable
+	{
+		public HistogramEqualizationControl()
+		{
+			InitializeComponent();
+
+			var vm = new HistogramEqualizationControlViewModel();
+			ViewModel = vm;
+		}
+
+		public void Dispose()
+		{
+			var vm = (HistogramEqualizationControlViewModel)ViewModel;
+			vm.Dispose();
+		}
+	}
+}

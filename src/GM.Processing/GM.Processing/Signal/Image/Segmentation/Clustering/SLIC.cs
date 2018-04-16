@@ -30,7 +30,7 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Threading;
-using GM.Processing.Utility;
+using GM.Utility;
 
 namespace GM.Processing.Signal.Image.Segmentation.Clustering
 {

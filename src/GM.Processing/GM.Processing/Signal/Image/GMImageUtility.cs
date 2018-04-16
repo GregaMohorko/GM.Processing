@@ -32,7 +32,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GM.Processing.Utility;
+using GM.Utility;
 
 namespace GM.Processing.Signal.Image
 {

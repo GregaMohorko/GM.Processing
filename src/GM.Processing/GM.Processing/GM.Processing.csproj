@@ -38,12 +38,18 @@
     <AssemblyOriginatorKeyFile>GM.StrongNameKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GM.Utility, Version=1.2.5.0, Culture=neutral, PublicKeyToken=a1ae152199607549, processorArchitecture=MSIL">
-      <HintPath>..\packages\GM.Utility.1.2.5\lib\netstandard2.0\GM.Utility.dll</HintPath>
+    <Reference Include="GM.Utility, Version=1.2.6.0, Culture=neutral, PublicKeyToken=a1ae152199607549, processorArchitecture=MSIL">
+      <HintPath>..\packages\GM.Utility.1.2.6\lib\netstandard2.0\GM.Utility.dll</HintPath>
     </Reference>
+    <Reference Include="MathNet.Numerics, Version=3.20.2.0, Culture=neutral, PublicKeyToken=cd8b63ad3d691a37, processorArchitecture=MSIL">
+      <HintPath>..\packages\MathNet.Numerics.Signed.3.20.2\lib\net40\MathNet.Numerics.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -54,6 +60,7 @@
   <ItemGroup>
     <Compile Include="ComputerScience\ComputerGraphics\ContourLines\SegmentContourLines.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Signal\Image\Bracketing\ExposureBracketing.cs" />
     <Compile Include="Signal\Image\ContrastEnhancement\AdaptiveHistogramEqualization.cs" />
     <Compile Include="Signal\Image\ContrastEnhancement\HistogramEqualization.cs" />
     <Compile Include="Signal\Image\GMImage.cs" />
@@ -61,10 +68,9 @@
     <Compile Include="Signal\Image\GMImagePlaneUtility.cs" />
     <Compile Include="Signal\Image\GMImageUtility.cs" />
     <Compile Include="Signal\Image\ImageHistogram.cs" />
+    <Compile Include="Signal\Image\ImageMetadata.cs" />
+    <Compile Include="Signal\Image\ImageMetadataTags.cs" />
     <Compile Include="Signal\Image\Segmentation\Clustering\SLIC.cs" />
-    <Compile Include="Utility\ColorUtility.cs" />
-    <Compile Include="Utility\IEnumerableUtility.cs" />
-    <Compile Include="Utility\ReflectionUtility.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GM.Processing.licenseheader" />

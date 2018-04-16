@@ -48,16 +48,16 @@ namespace GM.Processing.Examples.Signal.Image.Segmentation.Clustering
 	{
 		public string Name => "Simple Linear Iterative Clustering (SLIC)";
 		public string NameShort => "SLIC";
-		public Type UserControlType => typeof(SLIC);
+		public Type UserControlType => typeof(SLICControl);
 	}
 
-	public partial class SLIC : BaseControl
+	public partial class SLICControl : BaseControl
 	{
-		public SLIC()
+		public SLICControl()
 		{
 			InitializeComponent();
 
-			var vm = new SLICViewModel();
+			var vm = new SLICControlViewModel();
 			ViewModel = vm;
 		}
 	}

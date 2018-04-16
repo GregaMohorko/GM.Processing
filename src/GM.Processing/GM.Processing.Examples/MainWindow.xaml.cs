@@ -40,12 +40,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using GM.Processing.Examples.Signal.Image.Bracketing;
+using GM.Processing.Examples.Utility;
 using GM.WPF.Windows;
 
 namespace GM.Processing.Examples
 {
 	public partial class MainWindow : BaseWindow,IDisposable
 	{
+		// set this to the type of the algorithm to auto-select on startup, or null to disable auto-select
+		private static readonly Type autoSelectOnStart = null;
+
 		private Dictionary<Type, UserControl> instantiatedControls;
 
 		public MainWindow()
@@ -93,8 +98,11 @@ namespace GM.Processing.Examples
 				return new { Name = name, TreeViewItem = tvi, Children = new List<dynamic>() };
 			}
 
+			TreeViewItem itemToAutoSelect = null;
+
 			foreach(IAlgorithm algorithm in vm.Algorithms) {
-				string algNamespace = algorithm.GetType().Namespace.Substring(baseNamespace.Length+1);
+				Type algorithmType = algorithm.GetType();
+				string algNamespace = algorithmType.Namespace.Substring(baseNamespace.Length+1);
 				string[] algNamespaceParts = algNamespace.Split('.');
 				dynamic current = alreadyAdded.FirstOrDefault(ad => ad.Name == algNamespaceParts[0]);
 				if(current == null) {
@@ -112,7 +120,15 @@ namespace GM.Processing.Examples
 					current = next;
 				}
 				var currentTreeViewItem = (TreeViewItem)current.TreeViewItem;
-				currentTreeViewItem.Items.Add(new TreeViewItem() { Header=algorithm.Name,Tag=algorithm, Cursor=Cursors.Hand });
+				var newTreeViewItem = new TreeViewItem() { Header = algorithm.Name, Tag = algorithm, Cursor = Cursors.Hand };
+				currentTreeViewItem.Items.Add(newTreeViewItem);
+				if(autoSelectOnStart!=null && itemToAutoSelect==null && autoSelectOnStart == algorithmType) {
+					itemToAutoSelect = newTreeViewItem;
+				}
+			}
+
+			if(itemToAutoSelect != null) {
+				itemToAutoSelect.Select();
 			}
 		}
 

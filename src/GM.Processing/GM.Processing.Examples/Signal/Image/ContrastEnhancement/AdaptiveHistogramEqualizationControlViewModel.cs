@@ -41,7 +41,7 @@ using GM.Processing.Signal.Image.ContrastEnhancement;
 
 namespace GM.Processing.Examples.Signal.Image.ContrastEnhancement
 {
-	class AdaptiveHistogramEqualizationViewModel:LoggableViewModel,IDisposable
+	class AdaptiveHistogramEqualizationControlViewModel:LoggableViewModel,IDisposable
 	{
 		private static readonly double[] clipLimits = { 1, 2, 3, 3.5, 4, 8 };
 
@@ -60,7 +60,7 @@ namespace GM.Processing.Examples.Signal.Image.ContrastEnhancement
 		private volatile object imageFiles_lock = new object();
 		private CancellationTokenSource cancellationTokenSource;
 
-		public AdaptiveHistogramEqualizationViewModel()
+		public AdaptiveHistogramEqualizationControlViewModel()
 		{
 			ThreadCountItems = Enumerable.Range(1, Environment.ProcessorCount).ToList();
 			ThreadCount = Math.Max(1, Environment.ProcessorCount / 2);
@@ -92,7 +92,6 @@ namespace GM.Processing.Examples.Signal.Image.ContrastEnhancement
 				}
 				Directory = dialog.SelectedPath;
 			}
-			CanEditSettings = true;
 		}
 
 		private void Cancel()

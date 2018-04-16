@@ -35,7 +35,8 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using GM.Processing.Utility;
+using System.Windows.Media.Imaging;
+using GM.Utility;
 
 namespace GM.Processing.Signal.Image
 {
@@ -66,11 +67,33 @@ namespace GM.Processing.Signal.Image
 		public readonly int[] Palette;
 
 		/// <summary>
+		/// Metadata of this image.
+		/// </summary>
+		public readonly ImageMetadata Metadata;
+
+		/// <summary>
+		/// Creates a new instance of <see cref="GMImage"/> with the specified width, height and plane count.
+		/// </summary>
+		/// <param name="width">The width of the image.</param>
+		/// <param name="height">The height of the image.</param>
+		/// <param name="planeCount">Number of image planes.</param>
+		public GMImage(int width, int height, int planeCount)
+		{
+			Width = width;
+			Height = height;
+			Planes = new List<GMImagePlane>(planeCount);
+			for(int i = planeCount; i > 0; --i) {
+				Planes.Add(new GMImagePlane(width, height));
+			}
+		}
+
+		/// <summary>
 		/// Creates a new instance of <see cref="GMImage"/> with the provided image planes.
 		/// </summary>
 		/// <param name="planes">A collection of image color planes.</param>
 		/// <param name="palette">The color palette.</param>
-		public GMImage(List<GMImagePlane> planes, int[] palette = null)
+		/// <param name="metadata">Metadata.</param>
+		public GMImage(List<GMImagePlane> planes, int[] palette = null, ImageMetadata metadata=null)
 		{
 			if(planes == null) {
 				throw new ArgumentNullException(nameof(planes));
@@ -88,18 +111,25 @@ namespace GM.Processing.Signal.Image
 			Height = plane.Height;
 			Planes = planes;
 			Palette = palette;
+			Metadata = metadata;
 		}
 
 		/// <summary>
-		/// Creates a new instance of <see cref="GMImage"/> with the color planes copied from the provided image.
+		/// Creates a new instance of <see cref="GMImage"/> with the data copied from the provided image.
 		/// </summary>
-		/// <param name="image">The image from which to copy the color planes.</param>
+		/// <param name="image">The image from which to copy the data.</param>
 		public GMImage(GMImage image)
 		{
 			Width = image.Width;
 			Height = image.Height;
 			Planes = image.Planes.Select(p => new GMImagePlane(p)).ToList();
-			Palette = image.Palette;
+			if(image.Palette != null) {
+				Palette = new int[image.Palette.Length];
+				Array.Copy(image.Palette, Palette, Palette.Length);
+			}
+			if(image.Metadata != null) {
+				Metadata = new ImageMetadata(image.Metadata);
+			}
 		}
 
 		/// <summary>
@@ -309,6 +339,12 @@ namespace GM.Processing.Signal.Image
 			Marshal.Copy(data, 0, bmpData.Scan0, data.Length);
 			bmp.UnlockBits(bmpData);
 
+			if(Metadata != null) {
+				foreach(PropertyItem pi in Metadata.PropertyItems) {
+					bmp.SetPropertyItem(pi);
+				}
+			}
+
 			return bmp;
 		}
 
@@ -362,7 +398,14 @@ namespace GM.Processing.Signal.Image
 					}
 				}
 
-				return new GMImage(planes, palette);
+				ImageMetadata metadata;
+				if(bmp.PropertyItems.IsNullOrEmpty()) {
+					metadata = new ImageMetadata();
+				} else {
+					metadata = new ImageMetadata(bmp.PropertyItems);
+				}
+
+				return new GMImage(planes, palette, metadata);
 			}
 		}
 

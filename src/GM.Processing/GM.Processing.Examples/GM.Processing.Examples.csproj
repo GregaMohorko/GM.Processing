@@ -48,14 +48,14 @@
     <Reference Include="GalaSoft.MvvmLight.Platform, Version=5.4.1.0, Culture=neutral, PublicKeyToken=5f873c45e98af8a1, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.5.4.1\lib\net45\GalaSoft.MvvmLight.Platform.dll</HintPath>
     </Reference>
-    <Reference Include="GM.Utility, Version=1.2.5.0, Culture=neutral, PublicKeyToken=a1ae152199607549, processorArchitecture=MSIL">
-      <HintPath>..\packages\GM.Utility.1.2.5\lib\netstandard2.0\GM.Utility.dll</HintPath>
+    <Reference Include="GM.Utility, Version=1.2.6.0, Culture=neutral, PublicKeyToken=a1ae152199607549, processorArchitecture=MSIL">
+      <HintPath>..\packages\GM.Utility.1.2.6\lib\netstandard2.0\GM.Utility.dll</HintPath>
     </Reference>
     <Reference Include="GM.WPF, Version=1.0.1.2, Culture=neutral, PublicKeyToken=a1ae152199607549, processorArchitecture=MSIL">
       <HintPath>..\packages\GM.WPF.1.0.1.2\lib\net461\GM.WPF.dll</HintPath>
     </Reference>
-    <Reference Include="PropertyChanged, Version=2.5.2.0, Culture=neutral, PublicKeyToken=ee3ee20bcf148ddd, processorArchitecture=MSIL">
-      <HintPath>..\packages\PropertyChanged.Fody.2.5.2\lib\net452\PropertyChanged.dll</HintPath>
+    <Reference Include="PropertyChanged, Version=2.5.3.0, Culture=neutral, PublicKeyToken=ee3ee20bcf148ddd, processorArchitecture=MSIL">
+      <HintPath>..\packages\PropertyChanged.Fody.2.5.3\lib\net452\PropertyChanged.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -83,18 +83,23 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Common\LoggableViewModel.cs" />
-    <Compile Include="Signal\Image\ContrastEnhancement\AdaptiveHistogramEqualization.xaml.cs">
-      <DependentUpon>AdaptiveHistogramEqualization.xaml</DependentUpon>
+    <Compile Include="Signal\Image\Bracketing\ExposureBracketingControl.xaml.cs">
+      <DependentUpon>ExposureBracketingControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Signal\Image\ContrastEnhancement\AdaptiveHistogramEqualizationViewModel.cs" />
-    <Compile Include="Signal\Image\ContrastEnhancement\HistogramEqualization.xaml.cs">
-      <DependentUpon>HistogramEqualization.xaml</DependentUpon>
+    <Compile Include="Signal\Image\Bracketing\ExposureBracketingControlViewModel.cs" />
+    <Compile Include="Signal\Image\ContrastEnhancement\AdaptiveHistogramEqualizationControl.xaml.cs">
+      <DependentUpon>AdaptiveHistogramEqualizationControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Signal\Image\ContrastEnhancement\HistogramEqualizationViewModel.cs" />
-    <Compile Include="Signal\Image\Segmentation\Clustering\SLIC.xaml.cs">
-      <DependentUpon>SLIC.xaml</DependentUpon>
+    <Compile Include="Signal\Image\ContrastEnhancement\AdaptiveHistogramEqualizationControlViewModel.cs" />
+    <Compile Include="Signal\Image\ContrastEnhancement\HistogramEqualizationControl.xaml.cs">
+      <DependentUpon>HistogramEqualizationControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Signal\Image\Segmentation\Clustering\SLICViewModel.cs" />
+    <Compile Include="Signal\Image\ContrastEnhancement\HistogramEqualizationControlViewModel.cs" />
+    <Compile Include="Signal\Image\Segmentation\Clustering\SLICControl.xaml.cs">
+      <DependentUpon>SLICControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Signal\Image\Segmentation\Clustering\SLICControlViewModel.cs" />
+    <Compile Include="Utility\TreeViewUtility.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -108,15 +113,19 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Signal\Image\ContrastEnhancement\AdaptiveHistogramEqualization.xaml">
+    <Page Include="Signal\Image\Bracketing\ExposureBracketingControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Signal\Image\ContrastEnhancement\HistogramEqualization.xaml">
+    <Page Include="Signal\Image\ContrastEnhancement\AdaptiveHistogramEqualizationControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Signal\Image\Segmentation\Clustering\SLIC.xaml">
+    <Page Include="Signal\Image\ContrastEnhancement\HistogramEqualizationControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Signal\Image\Segmentation\Clustering\SLICControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
