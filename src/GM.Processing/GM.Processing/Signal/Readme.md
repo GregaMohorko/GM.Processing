@@ -6,7 +6,7 @@
 
 #### [Exposure Bracketing](Image/Bracketing/ExposureBracketing.md)
 
-<img srce="/Documentation/Signal/Image/Bracketing/ExposureBracketing/EXPOSURE%20BRACKETING%20Desktop02.gif" alt="EXPOSURE BRACKETING" title="Exposure Bracketing" height="200" />
+<img src="/Documentation/Signal/Image/Bracketing/ExposureBracketing/EXPOSURE%20BRACKETING%20Desktop02.gif" alt="EXPOSURE BRACKETING" title="Exposure Bracketing" height="200" />
 
 ### [Contrast Enhancement](Image/ContrastEnhancement)
 
