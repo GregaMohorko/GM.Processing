@@ -58,7 +58,6 @@ namespace GM.Processing.Examples.Signal.Image.ContrastEnhancement
 
 		private List<string> imageFiles;
 		private volatile object imageFiles_lock = new object();
-		private CancellationTokenSource cancellationTokenSource;
 
 		public AdaptiveHistogramEqualizationControlViewModel()
 		{
@@ -74,13 +73,6 @@ namespace GM.Processing.Examples.Signal.Image.ContrastEnhancement
 			Command_SelectDirectory = new RelayCommand(SelectDirectory, () => CanEditSettings);
 			Command_Run = new RelayCommand(Run, () => Directory != null && CanEditSettings);
 			Command_Cancel = new RelayCommand(Cancel, () => Directory != null && !CanEditSettings);
-		}
-
-		public void Dispose()
-		{
-			cancellationTokenSource?.Cancel();
-			cancellationTokenSource?.Dispose();
-			cancellationTokenSource = null;
 		}
 
 		private void SelectDirectory()

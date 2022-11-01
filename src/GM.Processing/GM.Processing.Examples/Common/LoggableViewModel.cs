@@ -28,21 +28,38 @@ Author: GregaMohorko
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using GM.WPF.MVVM;
 
 namespace GM.Processing.Examples.Common
 {
-	class LoggableViewModel:ViewModel
+	class LoggableViewModel:ViewModel,IDisposable
 	{
 		public string Log { get; private set; }
 		private volatile object log_lock = new object();
 
+		protected CancellationTokenSource cancellationTokenSource;
+
+		public string ElapsedTime { get; private set; }
+		private Stopwatch stopwatch;
+
 		public LoggableViewModel()
 		{
 			Log = "";
+		}
+		
+		/// <summary>
+		/// Disposes the cancellation token source.
+		/// </summary>
+		public void Dispose()
+		{
+			cancellationTokenSource?.Cancel();
+			cancellationTokenSource?.Dispose();
+			cancellationTokenSource = null;
 		}
 
 		/// <summary>
@@ -53,6 +70,20 @@ namespace GM.Processing.Examples.Common
 			lock(log_lock) {
 				Log = $"[{DateTime.Now.ToString()}] {message}" + Environment.NewLine + Log;
 			}
+		}
+
+		protected void StartCountingTime()
+		{
+			stopwatch = Stopwatch.StartNew();
+			Task.Run(async delegate
+			{
+				while(cancellationTokenSource != null && !cancellationTokenSource.IsCancellationRequested) {
+					ElapsedTime = stopwatch.Elapsed.ToString("hh':'mm':'ss");
+					await Task.Delay(1000);
+				}
+				stopwatch.Stop();
+				stopwatch = null;
+			});
 		}
 	}
 }

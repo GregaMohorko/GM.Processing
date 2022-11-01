@@ -232,6 +232,29 @@ namespace GM.Processing.Signal.Image
 		}
 
 		/// <summary>
+		/// Converts this image to an array of arrays where the indexes of the first outer array are Y and X coordinates. The index of the inner array represents each image plane.
+		/// </summary>
+		/// <param name="image">The image.</param>
+		public static double [,][] ToDoubles(this GMImage image)
+		{
+			if(image == null) {
+				throw new ArgumentNullException(nameof(image));
+			}
+			var doubles = new double[image.Height, image.Width][];
+			for(int y = image.Height - 1; y >= 0; --y) {
+				for(int x = image.Width - 1; x >= 0; --x) {
+					var planes = new double[image.Planes.Count];
+					for(int i = image.Planes.Count - 1; i >= 0; --i) {
+						byte value = image[i][x, y];
+						planes[i] = value / 255d;
+					}
+					doubles[y, x] = planes;
+				}
+			}
+			return doubles;
+		}
+
+		/// <summary>
 		/// Converts this image to CIE-L*ab color space.
 		/// <para>Returns an array of arrays where the indexes of the first outer array are Y and X coordinates. The index of the inner array represents components of the CIE-L*ab color space (L, a and b).</para>
 		/// </summary>

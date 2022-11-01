@@ -28,6 +28,7 @@ Author: GregaMohorko
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -42,18 +43,18 @@ namespace GM.Processing.Signal.Image
 		/// <summary>
 		/// The width of this plane.
 		/// </summary>
-		public readonly int Width;
+		public int Width { get; private set; }
 		/// <summary>
 		/// The height of this plane.
 		/// </summary>
-		public readonly int Height;
+		public int Height { get; private set; }
 
 		/// <summary>
 		/// The pixels of this image plane.
 		/// <para>Index representations: [y, x].</para>
 		/// <para>You can also use <see cref="this[int, int]"/>.</para>
 		/// </summary>
-		public readonly byte[,] Pixels;
+		public byte[,] Pixels { get; private set; }
 
 		/// <summary>
 		/// Creates a new instance of <see cref="GMImagePlane"/> with the specified width and height.
@@ -163,6 +164,24 @@ namespace GM.Processing.Signal.Image
 			}
 
 			Array.Copy(sourcePlane.Pixels, Pixels, Pixels.Length);
+		}
+
+		/// <summary>
+		/// Crops this image plane to the specified rectangle.
+		/// </summary>
+		/// <param name="rectangle">The rectangle containing the information about the location and size of the crop.</param>
+		public void Crop(Rectangle rectangle)
+		{
+			var newPixels = new byte[rectangle.Height, rectangle.Width];
+			for(int y = rectangle.Bottom - 1, newY=rectangle.Height-1; y >= rectangle.Y; --y,--newY) {
+				for(int x = rectangle.Right - 1, newX=rectangle.Width-1; x >= rectangle.X; --x,--newX) {
+					newPixels[newY, newX] = Pixels[y, x];
+				}
+			}
+
+			Pixels = newPixels;
+			Width = rectangle.Width;
+			Height = rectangle.Height;
 		}
 
 		/// <summary>

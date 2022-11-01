@@ -28,8 +28,10 @@ Author: GregaMohorko
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -40,7 +42,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using GM.Processing.Examples.Signal.Image.Bracketing;
 using GM.Processing.Examples.Utility;
 using GM.WPF.Windows;
 
@@ -55,6 +56,9 @@ namespace GM.Processing.Examples
 
 		public MainWindow()
 		{
+			Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+			Thread.CurrentThread.CurrentUICulture = Thread.CurrentThread.CurrentCulture;
+
 			InitializeComponent();
 
 			var vm = new MainWindowViewModel();

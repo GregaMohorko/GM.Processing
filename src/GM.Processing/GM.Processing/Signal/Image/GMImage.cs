@@ -35,7 +35,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
 using GM.Utility;
 
 namespace GM.Processing.Signal.Image
@@ -48,11 +47,11 @@ namespace GM.Processing.Signal.Image
 		/// <summary>
 		/// The width of the image.
 		/// </summary>
-		public readonly int Width;
+		public int Width { get; private set; }
 		/// <summary>
 		/// The height of the image.
 		/// </summary>
-		public readonly int Height;
+		public int Height { get; private set; }
 
 		/// <summary>
 		/// Color planes of this image.
@@ -249,6 +248,21 @@ namespace GM.Processing.Signal.Image
 				throw new ArgumentNullException(nameof(color));
 			}
 			this[x, y] = color;
+		}
+
+		/// <summary>
+		/// Crops this image to the specified rectangle.
+		/// </summary>
+		/// <param name="rectangle">The rectangle containing the information about the location and size of the crop.</param>
+		public void Crop(Rectangle rectangle)
+		{
+			// crop the image planes
+			foreach(GMImagePlane plane in Planes) {
+				plane.Crop(rectangle);
+			}
+
+			Width = rectangle.Width;
+			Height = rectangle.Height;
 		}
 
 		/// <summary>

@@ -42,7 +42,7 @@ using GM.Processing.Signal.Image.Bracketing;
 
 namespace GM.Processing.Examples.Signal.Image.Bracketing
 {
-	class ExposureBracketingControlViewModel:LoggableViewModel,IDisposable
+	class ExposureBracketingControlViewModel:LoggableViewModel
 	{
 		// set this to null to disable auto-select
 		private const string AUTO_SELECT_DIR = null;
@@ -52,7 +52,6 @@ namespace GM.Processing.Examples.Signal.Image.Bracketing
 		public RelayCommand Command_Cancel { get; private set; }
 
 		public string Directory { get; private set; }
-		public string ElapsedTime { get; private set; }
 		public double Progress { get; private set; }
 		public int Smoothness { get; set; }
 		public int SampleCount { get; set; }
@@ -60,8 +59,6 @@ namespace GM.Processing.Examples.Signal.Image.Bracketing
 		public bool CanEditSettings { get; private set; }
 
 		private List<string> imageFiles;
-		private CancellationTokenSource cancellationTokenSource;
-		private Stopwatch stopwatch;
 
 		public ExposureBracketingControlViewModel()
 		{
@@ -77,17 +74,10 @@ namespace GM.Processing.Examples.Signal.Image.Bracketing
 			Command_Run = new RelayCommand(Run, () => Directory != null && CanEditSettings);
 			Command_Cancel = new RelayCommand(Cancel, () => Directory != null && !CanEditSettings);
 
-			if(AUTO_SELECT_DIR != null) {
+			if(AUTO_SELECT_DIR != null && System.IO.Directory.Exists(AUTO_SELECT_DIR)) {
 				Directory = AUTO_SELECT_DIR;
 				Run();
 			}
-		}
-
-		public void Dispose()
-		{
-			cancellationTokenSource?.Cancel();
-			cancellationTokenSource?.Dispose();
-			cancellationTokenSource = null;
 		}
 
 		private void SelectDirectory()
@@ -138,20 +128,6 @@ namespace GM.Processing.Examples.Signal.Image.Bracketing
 			CanEditSettings = true;
 			Progress = 0;
 			Command_Run.RaiseCanExecuteChanged();
-		}
-
-		private void StartCountingTime()
-		{
-			stopwatch = Stopwatch.StartNew();
-			Task.Run(async delegate
-			{
-				while(cancellationTokenSource!=null && !cancellationTokenSource.IsCancellationRequested) {
-					ElapsedTime = stopwatch.Elapsed.ToString("hh':'mm':'ss");
-					await Task.Delay(1000);
-				}
-				stopwatch.Stop();
-				stopwatch = null;
-			});
 		}
 
 		private void DoWork()

@@ -36,6 +36,7 @@ using System.Windows.Controls;
 namespace GM.Processing.Examples.Utility
 {
 	// FIXME GM.WPF
+	// already added
 
 	/// <summary>
 	/// Utilities for <see cref="TreeView"/>.
